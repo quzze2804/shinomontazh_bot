@@ -83,11 +83,10 @@ async def phone_chosen(message: types.Message, state: FSMContext):
     bookings[time] = {"name": name, "phone": phone, "user_id": message.from_user.id}
 
     await message.answer(
-        f"✅ Ви успішно записані на {time}!
-"
-        f"👤 Ім’я: {name}
-📞 Телефон: {phone}"
-    )
+    f"✅ Ви успішно записані на {time}!\n"
+    f"👤 Ім’я: {name}\n"
+    f"📞 Телефон: {phone}"
+)
 
     await bot.send_message(
         ADMIN_ID,
