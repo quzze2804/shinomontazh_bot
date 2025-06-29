@@ -125,19 +125,5 @@ async def cancel_booking(callback: types.CallbackQuery):
             return
     await callback.message.edit_text("ℹ️ Запис не знайдено.")
 
-# ... все твои предыдущие импорты и хендлеры ...
-
-@dp.callback_query_handler(lambda c: c.data == "cancel_booking")
-async def cancel_booking(callback: types.CallbackQuery):
-    # код отмены записи...
-
-@dp.callback_query_handler(lambda c: c.data == "reschedule_booking")
-async def reschedule_booking_start(callback: types.CallbackQuery, state: FSMContext):
-    # начало переноса записи...
-
-@dp.message_handler(state=RescheduleStates.waiting_for_new_time)
-async def process_new_time(message: types.Message, state: FSMContext):
-    # обработка нового времени...
-
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
