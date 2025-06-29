@@ -125,5 +125,71 @@ async def cancel_booking(callback: types.CallbackQuery):
             return
     await callback.message.edit_text("ℹ️ Запис не знайдено.")
 
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+# Скасування запису
+@dp.callback_query_handler(lambda c: c.data == "cancel_booking")
+async def cancel_booking(callback: types.CallbackQuery):
+    user_id = callback.from_user.id
+    global bookings
+    for time in list(bookings):
+        if bookings[time].get("user_id") == user_id:
+            del bookings[time]
+            await callback.message.edit_text("✅ Ваш запис скасовано. Якщо захочеш — можеш записатися знову через /start 😉")
+            return
+    await callback.message.edit_text("ℹ️ У тебе немає активного запису.")
+
+# Клас для станів переносу
+class RescheduleStates(StatesGroup):
+    waiting_for_new_time = State()
+
+# Початок переносу
+@dp.callback_query_handler(lambda c: c.data == "reschedule_booking")
+async def reschedule_booking_start(callback: types.CallbackQuery, state: FSMContext):
+    user_id = callback.from_user.id
+    user_booking = None
+    for time, data in bookings.items():
+        if data.get("user_id") == user_id:
+            user_booking = time
+            break
+    if not user_booking:
+        await callback.message.edit_text("ℹ️ У тебе немає активного запису для переносу.")
+        return
+
+    await RescheduleStates.waiting_for_new_time.set()
+    await state.update_data(old_time=user_booking)
+    
+    # Відображаємо клавіатуру з вільними слотами
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, row_width=4)
+    buttons = []
+    for time in time_slots:
+        if time in bookings and time != user_booking:
+            buttons.append(KeyboardButton(f"❌ {time}"))
+        else:
+            buttons.append(KeyboardButton(time))
+    keyboard.add(*buttons)
+    await callback.message.answer("🕓 Оберіть новий час для переносу:", reply_markup=keyboard)
+
+# Вибір нового часу
+@dp.message_handler(state=RescheduleStates.waiting_for_new_time)
+async def process_new_time(message: types.Message, state: FSMContext):
+    new_time = message.text.replace("❌", "").strip()
+    data = await state.get_data()
+    old_time = data.get("old_time")
+
+    if new_time not in time_slots:
+        await message.answer("⛔️ Недійсний час, оберіть час зі списку.")
+        return
+
+    if new_time in bookings and new_time != old_time:
+        await message.answer("⛔️ Цей час вже зайнятий. Оберіть інший.")
+        return
+
+    bookings[new_time] = bookings.pop(old_time)
+
+    await message.answer(f"✅ Твій запис перенесено з {old_time} на {new_time}.")
+    await bot.send_message(ADMIN_ID, f"♻️ Користувач {bookings[new_time]['name']} переніс запис з {old_time} на {new_time}.")
+    await state.finish()
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
