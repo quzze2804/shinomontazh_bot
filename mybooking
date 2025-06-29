@@ -1,0 +1,37 @@
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from datetime import datetime
+
+@dp.message_handler(commands=['mybooking'])
+async def my_booking(message: types.Message):
+    user_id = message.from_user.id
+    booking = next((b for b in bookings if b["user_id"] == user_id), None)
+
+    if booking:
+        date_str = booking["datetime"].strftime('%Y-%m-%d %H:%M')
+        kb = InlineKeyboardMarkup().add(
+            InlineKeyboardButton("❌ Скасувати запис", callback_data="cancel_booking"),
+            InlineKeyboardButton("🔄 Перенести запис", callback_data="reschedule_booking")
+        )
+        await message.answer(f"🔔 У тебе є активний запис на:\n📅 {date_str}", reply_markup=kb)
+    else:
+        await message.answer("ℹ️ У тебе поки що немає активного запису.")
+
+@dp.callback_query_handler(lambda c: c.data == "cancel_booking")
+async def cancel_booking(callback: types.CallbackQuery):
+    user_id = callback.from_user.id
+    global bookings
+    bookings = [b for b in bookings if b["user_id"] != user_id]
+    await callback.message.edit_text("❌ Твій запис було успішно скасовано. Якщо зміниш думку — завжди можеш обрати новий час.")
+
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
+
+class RescheduleState(StatesGroup):
+    choosing_time = State()
+
+@dp.callback_query_handler(lambda c: c.data == "reschedule_booking")
+async def reschedule_start(callback: types.CallbackQuery, state: FSMContext):
+    await state.set_state(RescheduleState.choosing_time)
+    await callback.message.edit_text("🔄 Добре! Обери новий час для запису з доступних варіантів:")
+    # Тут можеш викликати функцію, яка показує список доступного часу
+
