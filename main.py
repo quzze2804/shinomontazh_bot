@@ -90,5 +90,5 @@ async def phone_chosen(message: types.Message, state: FSMContext):
     )
     await state.finish()
 
-if name == '__main__':
+if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
