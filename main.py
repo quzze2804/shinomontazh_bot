@@ -49,6 +49,13 @@ async def start_handler(message: types.Message):
         "Натисніть «Старт», щоб обрати зручний час 🛞\n"
         "🕗 Графік роботи: 08:00 – 17:00", reply_markup=keyboard)
 
+@dp.message_handler(commands=['start'])
+async def start_command(message: types.Message):
+    await message.answer(
+        "👋 Привіт! Я бот шиномонтажу. Тут ти можеш легко записатись на зручний час.\n\n"
+        "📌 Для керування своїм записом натисни /mybooking"
+    )
+
 @dp.message_handler(lambda m: m.text == "Старт")
 async def start_booking(message: types.Message):
     await BookingStates.waiting_for_time.set()
