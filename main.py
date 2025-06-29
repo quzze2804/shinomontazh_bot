@@ -125,5 +125,5 @@ async def cancel_booking(callback: types.CallbackQuery):
             return
     await callback.message.edit_text("ℹ️ Запис не знайдено.")
 
-if name == '__main__':
+if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
