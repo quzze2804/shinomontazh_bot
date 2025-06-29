@@ -47,7 +47,9 @@ async def start_command(message: types.Message):
     keyboard.add(KeyboardButton("Старт"))
     await message.answer(
     "👋 Вітаємо у сервісі онлайн-запису на шиномонтаж!\n"
+
     "Натисніть «Старт», щоб обрати зручний час 🛞\n"
+
     "🕗 Графік роботи: 08:00 – 17:00", reply_markup=keyboard)
 
 @dp.message_handler(lambda m: m.text == "Старт")
