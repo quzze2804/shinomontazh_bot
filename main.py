@@ -115,6 +115,8 @@ async def my_booking(message: types.Message):
     else:
         await message.answer("ℹ️ У тебе немає активного запису.")
 
+
+
 @dp.callback_query_handler(lambda c: c.data == "cancel_booking")
 async def cancel_booking(callback: types.CallbackQuery):
     user_id = callback.from_user.id
