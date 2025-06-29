@@ -5,7 +5,7 @@ from aiogram.utils import executor
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemov
 
 API_TOKEN = os.getenv("API_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", 7285220061))
@@ -175,7 +175,7 @@ async def cancel_booking(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "cancel_booking")
 
-if name == '__main__':
+if __name__ == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
