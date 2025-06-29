@@ -97,6 +97,12 @@ async def phone_chosen(message: types.Message, state: FSMContext):
     )
     await state.finish()
 
+    await bot.send_message(
+        ADMIN_ID,
+        f"🔔 Нова бронь:\n🕒 {time}\n👤 {name}\n📞 {phone}"
+    )
+    await state.finish()
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 @dp.message_handler(commands=['mybooking'])
@@ -122,7 +128,6 @@ async def my_booking(message: types.Message):
     else:
         await message.answer("ℹ️ У тебе немає активного запису.")
 
-bookings[time] = {"name": name, "phone": phone, "user_id": message.from_user.id}
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
