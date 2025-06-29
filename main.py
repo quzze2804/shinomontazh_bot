@@ -160,6 +160,19 @@ async def on_startup(dp):
     start_scheduler(loop, bot, get_bookings)
     print("Scheduler started")
 
+@dp.callback_query_handler(lambda c: c.data == "cancel_booking")
+async def cancel_booking(callback: types.CallbackQuery):
+    user_id = callback.from_user.id
+    global bookings
+
+    for time in list(bookings):
+        if bookings[time].get("user_id") == user_id:
+            del bookings[time]
+            await callback.message.edit_text("✅ Запис скасовано. Якщо захочеш — можеш записатися знову через /start 😉")
+            return
+
+    await callback.message.edit_text("ℹ️ Запис не знайдено.")
+
 if name == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
 
