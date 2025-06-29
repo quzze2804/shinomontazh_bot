@@ -175,7 +175,7 @@ async def cancel_booking(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "cancel_booking")
 
-if name == '__main__':
+if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
