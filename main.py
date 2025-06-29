@@ -92,3 +92,34 @@ async def phone_chosen(message: types.Message, state: FSMContext):
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
+
+
+import asyncio
+from aiogram import Bot, Dispatcher, executor, types
+from scheduler import start_scheduler
+
+API_TOKEN = "твой_токен_бота"
+
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot)
+
+# Пример хранения записей в памяти
+bookings = []
+
+def get_bookings():
+    return bookings
+
+@dp.message_handler(commands=['start'])
+async def cmd_start(message: types.Message):
+    await message.answer("Привіт! Я бот шиномонтажу. Обирай час для запису...")
+
+# Допустим, где-то у тебя код записи добавляет запись в bookings:
+# bookings.append({"user_id": message.from_user.id, "datetime": datetime_obj})
+
+async def on_startup(dp):
+    loop = asyncio.get_event_loop()
+    start_scheduler(loop, bot, get_bookings)
+    print("Scheduler started")
+
+if name == '__main__':
+    executor.start_polling(dp, on_startup=on_startup)
