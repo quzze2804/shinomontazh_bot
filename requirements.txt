@@ -1,1 +1,2 @@
 aiogram==2.25.2
+APScheduler==3.9.1
