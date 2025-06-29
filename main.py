@@ -112,7 +112,7 @@ async def my_booking(message: types.Message):
             f"🕒 {found_time}\n👤 {found_data['name']}\n📞 {found_data['phone']}",
             reply_markup=kb
         )
-else:
+    else:
         await message.answer("ℹ️ У тебе немає активного запису.")
 
 @dp.callback_query_handler(lambda c: c.data == "cancel_booking")
