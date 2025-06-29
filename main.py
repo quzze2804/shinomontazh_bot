@@ -122,6 +122,8 @@ async def my_booking(message: types.Message):
     else:
         await message.answer("ℹ️ У тебе немає активного запису.")
 
+bookings[time] = {"name": name, "phone": phone, "user_id": message.from_user.id}
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
 
