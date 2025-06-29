@@ -84,7 +84,7 @@ async def phone_chosen(message: types.Message, state: FSMContext):
     name = user_data['name']
     phone = message.text
 
-    bookings[time] = {"name": name, "phone": phone}
+    bookings[time] = {"name": name, "phone": phone, "user_id": message.from_user.id}
 
     await message.answer(
         f"✅ Ви успішно записані на {time}!\n"
