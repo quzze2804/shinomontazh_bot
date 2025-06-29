@@ -1,1 +1,1 @@
-worker: python3 main.py
+worker: pip install -r requirements.txt && python3 main.py
