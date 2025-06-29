@@ -173,6 +173,8 @@ async def cancel_booking(callback: types.CallbackQuery):
 
     await callback.message.edit_text("ℹ️ Запис не знайдено.")
 
+@dp.callback_query_handler(lambda c: c.data == "cancel_booking")
+
 if name == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
 
