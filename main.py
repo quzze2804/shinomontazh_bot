@@ -130,3 +130,6 @@ async def on_startup(dp):
 
 if name == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from datetime import datetime
