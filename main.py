@@ -162,3 +162,30 @@ async def on_startup(dp):
 
 if name == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+@dp.message_handler(commands=['mybooking'])
+async def my_booking(message: types.Message):
+    user_id = message.from_user.id
+
+    found_time = None
+    found_data = None
+    for time, data in bookings.items():
+        if data.get("user_id") == user_id:
+            found_time = time
+            found_data = data
+            break
+
+    if found_time:
+        kb = InlineKeyboardMarkup().add(
+            InlineKeyboardButton("❌ Скасувати запис", callback_data="cancel_booking"),
+            InlineKeyboardButton("🔄 Перенести запис", callback_data="reschedule_booking")
+        )
+        await message.answer(
+            f"🔔 У тебе є активний запис:\n"
+            f"🕒 {found_time}\n👤 {found_data['name']}\n📞 {found_data['phone']}",
+            reply_markup=kb
+        )
+    else:
+        await message.answer("ℹ️ У тебе немає активного запису.")
